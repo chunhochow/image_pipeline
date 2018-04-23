@@ -1,13 +1,13 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
-* 
+*
 *  Copyright (c) 2008, Willow Garage, Inc.
 *  All rights reserved.
-* 
+*
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
 *  are met:
-* 
+*
 *   * Redistributions of source code must retain the above copyright
 *     notice, this list of conditions and the following disclaimer.
 *   * Redistributions in binary form must reproduce the above
@@ -17,7 +17,7 @@
 *   * Neither the name of the Willow Garage nor the names of its
 *     contributors may be used to endorse or promote products derived
 *     from this software without specific prior written permission.
-* 
+*
 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -157,20 +157,25 @@ private:
       try {
         filename = (g_format).str();
       } catch (...) { g_format.clear(); }
-      try {
-        filename = (g_format % count_).str();
-      } catch (...) { g_format.clear(); }
-      try { 
-        filename = (g_format % count_ % "jpg").str();
-      } catch (...) { g_format.clear(); }
 
       if (stamped_filename) {
+        try {
+          filename = (g_format % "jpg").str();
+        } catch (...) { g_format.clear(); }
+
         std::size_t found = filename.find_last_of("/\\");
         std::string path = filename.substr(0, found + 1);
         std::string basename = filename.substr(found + 1);
         std::stringstream ss;
-        ss << ros::Time::now().toNSec() << basename;
+        ss << ros::Time::now().toSec() << basename;
         filename = path + ss.str();
+      } else {  // not stamped_filename
+        try {
+          filename = (g_format % count_).str();
+        } catch (...) { g_format.clear(); }
+        try {
+          filename = (g_format % count_ % "jpg").str();
+        } catch (...) { g_format.clear(); }
       }
 
       if ( save_all_image || save_image_service ) {
