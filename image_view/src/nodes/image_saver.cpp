@@ -167,7 +167,9 @@ private:
         std::string path = filename.substr(0, found + 1);
         std::string basename = filename.substr(found + 1);
         std::stringstream ss;
-        ss << ros::Time::now().toSec() << basename;
+        auto timestamp = ros::Time::now().toSec();
+        // make a new folder every 5min
+        ss << (int)(timestamp % 300) << "/" << timestamp << basename;
         filename = path + ss.str();
       } else {  // not stamped_filename
         try {
